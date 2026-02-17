@@ -1,38 +1,1310 @@
-.App {
-  text-align: center;
+/* --- 1. 基础重置 --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.App-logo {
-  height: 40vmin;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background-color: #EBEEF5;
+  /* 全局背景底色 */
+}
+
+/* --- 2. 页面容器 --- */
+.page-container {
+  min-height: 100vh;
+  background-color: #EBEEF5;
+  width: 100%;
+  max-width: 375px;
+  /* 模拟手机宽度 */
+  margin: 0 auto;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* --- 3. 背景轮播区 --- */
+.background-section {
+  position: relative;
+  width: 100%;
+}
+
+.banner-img {
+  width: 100%;
+  /* 严格执行你给的原图 1536x836 比例 */
+  aspect-ratio: 1536 / 836;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* --- 4. 沉浸式遮罩 (必须有高度渐变才可见) --- */
+.bottom-mask {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* 遮罩高度建议设为图片高度的 40% 左右 */
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, #EBEEF5);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* --- 5. 轮播图指示器 (突破层级限制) --- */
+
+/* 5.1 关键：直接锁定外层“底座”容器 */
+.background-section .adm-swiper-indicator {
+  /* 彻底撤销源码中的居中逻辑 */
+  left: auto !important;
+  transform: none !important;
+
+  /* 锁定到右下角 */
+  right: 8px !important;
+  bottom: 58px !important;
+
+  /* 让底座宽度随内容自适应，不再横跨全屏 */
+  width: auto !important;
+}
+
+/* 5.2 内层指示器变量控制 */
+.custom-indicator {
+  --dot-color: rgba(255, 255, 255, 0.4);
+  --active-dot-color: #FFFFFF;
+  --dot-size: 4px;
+  --dot-spacing: 4px;
+}
+
+/* 5.3 基础圆点形状 */
+.custom-indicator .adm-page-indicator-dot {
+  width: var(--dot-size) !important;
+  height: var(--dot-size) !important;
+  border-radius: 50% !important;
+  transition: width 0.3s ease;
+  /* 增加胶囊伸缩动画 */
+}
+
+/* 5.4 激活态：变为胶囊形状 */
+.custom-indicator .adm-page-indicator-dot-active {
+  width: 12px !important;
+  /* 胶囊长度 */
+  border-radius: 3px !important;
+  background-color: var(--active-dot-color) !important;
+}
+
+/* --- 6. 内容区域与悬浮卡片 --- */
+.main-content {
+  position: relative;
+  padding: 0 10px;
+  margin-top: -48px;
+  /* 压在背景图上 */
+  z-index: 5;
+}
+
+
+
+/* --- 6. 搜索卡片核心样式 --- */
+.search-card {
+  background: #FFFFFF;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+
+
+  /* 确保 Tab 的背景色不溢出圆角 */
+}
+
+
+
+/* 容器基础：三个大格子 */
+.card-tabs {
+  display: flex;
+  background-color: #EDF0F7;
+  height: 48px;
+  border-radius: 6px 6px 0 0;
+}
+
+.tab-item {
+  flex: 1;
+  /* 初始平分，保证布局稳定 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* --- 核心：选中态背景变白 + 圆角处理 --- */
+.tab-item.is-active {
+  background-color: #FFFFFF !important;
+  /* 默认为顶部两角圆润 */
+  border-radius: 6px 6px 0 0;
+}
+
+/* 细节优化：第一个 Tab 变白时，左上角圆角要和卡片对齐 */
+.tab-item.is-active:first-child {
+  border-radius: 6px 6px 0 0;
+}
+
+/* 最后一个 Tab 变白时，右上角对齐 */
+.tab-item.is-active:last-child {
+  border-radius: 6px 6px 0 0;
+}
+
+/* 酒店 Tab 专属：内部三个小零件的舞台 */
+.inner-flex-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 初始态：三个零件靠得很近 */
+  gap: 0px;
+  transition: gap 0.3s ease, padding 0.3s ease;
+  width: 100%;
+}
+
+/* 酒店 Tab 选中后的状态 */
+.hotel-item.is-active {
+  background-color: #FFFFFF !important;
+  flex: 1.4;
+  /* 稍微变宽一点点给分裂留空间，如果你坚持不改变宽度，可以保持 flex: 1 */
+}
+
+.hotel-item.is-active .inner-flex-box {
+  /* 选中态：零件向两边滑开 */
+  gap: 24px;
+}
+
+/* 中间点的处理 */
+.center-dot {
+  font-style: normal;
+  color: #ccc;
+  transition: opacity 0.2s, width 0.2s;
+  opacity: 1;
+  width: auto;
+}
+
+/* 选中后点消失 */
+.hotel-item.is-active .center-dot {
+  opacity: 0;
+  width: 0;
+  /* 彻底腾出空间 */
+  margin: 0;
+}
+
+/* 文字颜色逻辑 */
+.sub-label {
+  color: #333;
+  padding: 0 2.5px;
+  /* 你要求的 padding */
+  transition: color 0.3s;
+}
+
+.hotel-item.is-active .sub-label.on {
+  color: #006FED !important;
+  font-weight: bold;
+}
+
+.tab-item.is-active:not(.hotel-item) {
+  background-color: #FFFFFF;
+  color: #006FED;
+  font-weight: bold;
+}
+
+/* 1. 默认状态文字不接收点击，确保第一次点击大盒子任何位置都走大盒子的逻辑 */
+.hotel-item .sub-label {
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* 2. 变白激活后，恢复文字点击 */
+.hotel-item.is-active .sub-label {
+  pointer-events: auto;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* 通用行样式 */
+.card-row {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #F2F2F2;
+}
+
+/* 地点行容器 */
+.location-row {
+  display: flex;
+  align-items: center;
+  padding: 16px 0;
+  /* 增加上下内边距 */
+  margin: 0 16px;
+  /* 左右留白，不要贴到卡片边框 */
+  border-bottom: 1px solid #F2F2F2;
+}
+
+/* 城市区域 */
+.city-box {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.city-main {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 城市名称旁边的定位图标：精致的瞄准器感 */
+.city-loc-icon {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid #006FED;
+  /* 颜色随文字 */
+  border-radius: 50%;
+  margin: 0 4px;
+  /* 左右各留一点间距 */
+  position: relative;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin-left: 10px;
 }
 
-.App-link {
-  color: #61dafb;
+/* 瞄准器中间的实心点 */
+.city-loc-icon::after {
+  content: "";
+  width: 3.5px;
+  height: 3.5px;
+  background-color: #006FED;
+  border-radius: 50%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* 瞄准器的四个小刻度线（可选，增加精致感） */
+.city-loc-icon::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  /* 比圆圈稍长一点点 */
+  height: 1.5px;
+  background: linear-gradient(to right, #006FED 2px, transparent 2px, transparent 16px, #006FED 16px);
+  /* 这个复杂的渐变是为了只在圆圈边缘露出一小截头 */
+}
+
+/* 纯 CSS 画一个小箭头 */
+.arrow-down-mini {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #333;
+  margin-left: 6px;
+  margin-top: 2px;
+}
+
+/* 垂直分割线 */
+.vertical-divider {
+  width: 1px;
+  height: 20px;
+  background-color: #EEE;
+  margin: 0 10px;
+}
+
+/* 搜索区域 */
+.search-input-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.placeholder {
+  font-size: 16px;
+  color: #999;
+}
+
+/* 相机图标：如果没图可以用 CSS 画个轮廓 */
+.icon-camera-custom {
+  width: 20px;
+  height: 16px;
+  border: 1.5px solid #006FED;
+  border-radius: 3px;
+  position: relative;
+  display: block;
+}
+
+.icon-camera-custom::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 5px;
+  width: 6px;
+  height: 3px;
+  background-color: #006FED;
+  border-radius: 1px;
+}
+
+/* 第三层 */
+.date-row-v2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  /* 增加上下间距，让呼吸感和图中一致 */
+  margin: 0 16px;
+  border-bottom: 1px solid #F2F2F2;
+}
+
+.date-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* 日期与横线之间的间距 */
+}
+
+.date-item {
+  display: flex;
+  align-items: baseline;
+  /* 关键：确保日期基准线对齐 */
+  gap: 6px;
+}
+
+.date-text {
+  font-size: 20px;
+  /* 图中数字很大 */
+  font-weight: 500;
+  /* 加粗 */
+  color: #000;
+}
+
+.date-festival {
+  font-size: 14px;
+  color: #666;
+  /* 节日名称较淡 */
+}
+
+.date-line {
+  color: #CCC;
+  font-size: 18px;
+}
+
+.date-stay {
+  font-size: 14px;
+  color: #333;
+  font-weight: normal;
+}
+
+/* 第四层 */
+/* 容器行：增加纵向间距以匹配截图呼吸感 */
+.occupancy-price-v3 {
+  display: flex;
+  align-items: center;
+  padding: 18px 0;
+  margin: 0 16px;
+  border-bottom: 1px solid #F5F5F5;
+}
+
+/* 左侧：选择人数 */
+.occupancy-click-area {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1.2;
+  /* 占据更多空间 */
+}
+
+.occupancy-main-text {
+  font-size: 16px;
+  font-weight: 500;
+  /* 极致加粗，还原图中质感 */
+  color: #111;
+  letter-spacing: -0.3px;
+}
+
+/* 精准手画图中那种极其小巧的箭头 */
+.occupancy-arrow {
+  width: 0;
+  height: 0;
+  border-left: 3.5px solid transparent;
+  border-right: 3.5px solid transparent;
+  border-top: 4.5px solid #111;
+  margin-left: 10px;
+  margin-top: 3px;
+}
+
+/* 垂直线：图中是非常短且颜色极浅的线 */
+.hairline-divider {
+  width: 1px;
+  height: 14px;
+  background-color: #EAEAEA;
+  margin: 0 10px;
+}
+
+/* 右侧：价格/钻级 */
+.price-click-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+
+}
+
+.price-placeholder-text {
+  font-size: 16px;
+  color: #BBBBBB;
+  /* 这种浅灰色是典型的占位符颜色 */
+  font-weight: normal;
+}
+
+/* 第五层 */
+/* 滚动容器：隐藏滚动条但保留滑动功能 */
+.tag-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  padding: 12px 16px;
+  /* 隐藏火狐和 IE 的滚动条 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* 隐藏 Chrome 和 Safari 的滚动条 */
+.tag-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.tag-wrapper {
+  display: flex;
+  white-space: nowrap;
+  gap: 8px;
+  /* 标签之间的间距 */
+}
+
+.custom-tag {
+  background-color: #F5F7FA;
+  /* 极其浅的灰色底 */
+  color: #333;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  /* 轻微圆角 */
+  display: inline-block;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* 针对超长标签显示省略号 */
+}
+
+/* --- 第六层：查询按钮修正版 --- */
+.search-btn-container {
+  padding: 8px 16px 20px 16px;
+  /* 底部留白 */
+}
+
+.main-search-btn {
+  width: 100%;
+  height: 48px;
+  /* 使用你要求的蓝色 #006FED，并做微弱渐变增强质感 */
+  background: linear-gradient(270deg, #0056B3 0%, #006FED 100%);
+  border: none;
+  border-radius: 8px 8px 16px 8px;
+  /* 还原图中的圆角 */
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 111, 237, 0.2);
+  /* 蓝色系投影 */
+  transition: transform 0.1s, opacity 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 简单的点击缩放反馈 */
+.main-search-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+
+/* 人数弹窗样式 */
+.occ-header {
+  position: relative;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+}
+
+.occ-header .close-x {
+  position: absolute;
+  left: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.occ-header .occ-title {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.occ-tips {
+  background: #f0f7ff;
+  color: #006fed;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.info-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: #006fed;
+  color: #fff;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 14px;
+  font-style: normal;
+  margin-right: 5px;
+}
+
+.stepper-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.label-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.stepper-row .label {
+  font-size: 16px;
+  color: #333;
+}
+
+.stepper-row .sub-label {
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+}
+
+.stepper-box {
+  display: flex;
+  align-items: center;
+}
+
+.stepper-box .val {
+  min-width: 40px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.stepper-box button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #006fed;
+  background: #fff;
+  color: #006fed;
+  font-size: 20px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.stepper-box .btn-minus.disabled {
+  border-color: #ccc;
+  color: #ccc;
+}
+
+.occ-done-btn {
+  width: 100%;
+  height: 48px;
+  background: #006fed;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  margin-top: 30px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* 价格星级网格布局 */
+.section-title {
+  font-size: 15px;
+  font-weight: bold;
+  margin: 15px 0;
+  color: #333;
+}
+
+.tag-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.filter-tag {
+  background: #f5f5f5;
+  padding: 8px 4px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  border: 1px solid transparent;
+}
+
+/* 选中后的标签样式 */
+.filter-tag.active {
+  background: #f0f7ff;
+  color: #006fed;
+  border-color: #006fed;
+  font-weight: bold;
+}
+
+/* 首页显示的文字颜色切换 */
+.active-val {
+  color: #333 !important;
+  font-weight: bold;
+}
+
+/* 底部按钮组布局 */
+.occ-footer-btns {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.reset-btn {
+  width: 80px;
+  height: 44px;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 8px;
+  color: #666;
+}
+
+/* 针对价格/钻级、人数等文字区域的通用限制 */
+.price-placeholder-text,
+.occupancy-main-text {
+  display: block;
+  /* 必须是块级或行内块级元素 */
+  max-width: 100%;
+  /* 限制最大宽度 */
+  white-space: nowrap;
+  /* 强制文字不换行 */
+  /* overflow: hidden; */
+  /* 隐藏超出部分 */
+  /* text-overflow: ellipsis; */
+  /* 超出部分显示省略号 */
+}
+
+/* 2. 【新增】强制取消弹窗步进器里的省略号 */
+.stepper-row .label {
+  display: inline-block;
+  /* 恢复正常排列 */
+  white-space: normal;
+  /* 允许换行（虽然这里字少不会换） */
+  overflow: visible;
+  /* 允许溢出显示 */
+  text-overflow: clip;
+  /* 关闭省略号 */
+  max-width: 140px;
+  /* 取消宽度限制 */
+  font-weight: 500;
+  color: #333;
+}
+
+/* 3. 确保 label-group 不会限制宽度 */
+.label-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  /* 让它自然占据左侧空间 */
+}
+
+/* 确保父级容器有固定宽度或 flex 占比，防止被撑开 */
+.price-click-area,
+.occupancy-click-area {
+  flex: 1;
+  /* 占据剩余空间 */
+  min-width: 0;
+  /* 这是一个 CSS 小技巧，确保 flex 子项能正确收缩 */
+  overflow: hidden;
+  /* 再次确保溢出隐藏 */
+}
+
+/* 针对价格/钻级、人数等文字区域的精准修正 */
+.price-placeholder-text,
+.occupancy-main-text {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  /* 1. 限制最大宽度，让省略号提前出现 */
+  max-width: 120px;
+
+  /* 2. 调低字重，防止看起来太厚重 */
+  font-weight: 400 !important;
+
+  flex: none;
+  /* 取消 flex:1，防止它强行撑开 */
+}
+
+/* 选中后的样式微调 */
+.active-val {
+  /* 选中后即便加粗，也控制在 500 左右，不要用 bold(700) */
+  font-weight: 500 !important;
+  color: #333 !important;
+}
+
+/* 确保父容器不会被挤压 */
+.price-click-area,
+.occupancy-click-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* 搜索输入框样式优化 */
+.search-input-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.search-input-main {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  padding: 0;
+  background: transparent;
+}
+
+.search-input-main::placeholder {
+  color: #999;
+}
+
+/* 标签行滚动核心：确保左右滑动 */
+.tag-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  /* 允许横向滚动 */
+  padding: 12px 16px;
+  /* 隐藏滚动条 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tag-scroll-container::-webkit-scrollbar {
+  display: none;
+  /* 针对 Chrome/Safari 隐藏滚动条 */
+}
+
+.tag-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  /* 强制不换行，这是滑动的关键 */
+  gap: 8px;
+}
+
+.custom-tag {
+  flex-shrink: 0;
+  /* 防止标签被压缩 */
+  background-color: #F5F7FA;
+  color: #333;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+/* 标签选中态：让他看起来有点反馈 */
+.custom-tag.tag-active {
+  background-color: #E6F0FF;
+  color: #006FED;
+  font-weight: bold;
+}
+
+/* 1. 首页人数显示区域：彻底禁用省略号，确保文字完整显示 */
+.occupancy-main-text {
+  display: inline-block !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  /* 允许溢出，不剪切 */
+  text-overflow: clip !important;
+  /* 彻底关掉省略号 */
+  max-width: none !important;
+  /* 撤销宽度限制 */
+  flex-shrink: 0;
+  /* 关键：禁止被右侧区域挤压 */
+  font-weight: 500;
+  color: #111;
+}
+
+/* 2. 调整父容器：让左边的人数区根据内容自动撑开 */
+.occupancy-click-area {
+  flex: none !important;
+  /* 不参与 flex 伸缩，内容多大就占多大 */
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+  /* 给分割线留点呼吸空间 */
+}
+
+/* 3. 让价格区域去承担剩下的空间并负责省略号 */
+.price-click-area {
+  flex: 1 !important;
+  /* 占据剩余的所有空间 */
+  min-width: 0;
+  /* 允许收缩以触发省略号 */
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.price-placeholder-text {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* 只有这里允许出现省略号 */
+}
+
+/* 民宿特有：人/床/居数行样式 */
+.minsu-occ-row {
+  display: flex;
+  align-items: center;
+  padding: 18px 0;
+  margin: 0 16px;
+  border-bottom: 1px solid #F5F5F5;
+  cursor: pointer;
+  min-width: 0;
+  /* 允许内部文字触发省略号 */
+}
+
+/* 确保民宿行的文字在超长时也能显示省略号 */
+.minsu-occ-row .price-placeholder-text {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  font-size: 16px;
+  color: #BBBBBB;
+  /* 默认占位符颜色 */
+}
+
+/* 选中后的深色加粗样式 */
+.minsu-occ-row .active-val {
+  color: #333 !important;
+  font-weight: 500 !important;
+}
+
+/* --- 1. 基础重置与页面容器 --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background-color: #EBEEF5;
+}
+
+.page-container {
+  min-height: 100vh;
+  background-color: #EBEEF5;
+  width: 100%;
+  max-width: 375px;
+  margin: 0 auto;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* --- 2. 背景与轮播指示器 --- */
+.background-section {
+  position: relative;
+  width: 100%;
+}
+
+.banner-img {
+  width: 100%;
+  aspect-ratio: 1536 / 836;
+  background-size: cover;
+  background-position: center;
+}
+
+.bottom-mask {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, #EBEEF5);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.background-section .adm-swiper-indicator {
+  left: auto !important;
+  transform: none !important;
+  right: 8px !important;
+  bottom: 58px !important;
+  width: auto !important;
+}
+
+.custom-indicator {
+  --dot-color: rgba(255, 255, 255, 0.4);
+  --active-dot-color: #FFFFFF;
+  --dot-size: 4px;
+}
+
+.custom-indicator .adm-page-indicator-dot {
+  width: var(--dot-size) !important;
+  height: var(--dot-size) !important;
+  transition: width 0.3s ease;
+}
+
+.custom-indicator .adm-page-indicator-dot-active {
+  width: 12px !important;
+  border-radius: 3px !important;
+  background-color: var(--active-dot-color) !important;
+}
+
+/* --- 3. 搜索卡片与 Tab 动画 --- */
+.main-content {
+  position: relative;
+  padding: 0 10px;
+  margin-top: -48px;
+  z-index: 5;
+}
+
+.search-card {
+  background: #FFFFFF;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.card-tabs {
+  display: flex;
+  background-color: #EDF0F7;
+  height: 48px;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #666;
+}
+
+.tab-item.is-active {
+  background-color: #FFFFFF !important;
+  color: #006FED;
+  font-weight: bold;
+}
+
+.inner-flex-box {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  transition: gap 0.3s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.hotel-item.is-active .inner-flex-box {
+  gap: 24px;
+}
+
+.hotel-item.is-active .sub-label.on {
+  color: #006FED !important;
+  font-weight: bold;
+}
+
+.center-dot {
+  color: #ccc;
+  transition: opacity 0.2s;
+}
+
+.hotel-item.is-active .center-dot {
+  opacity: 0;
+  width: 0;
+}
+
+/* --- 4. 核心：首页文字省略号与布局控制 --- */
+.card-row {
+  display: flex;
+  align-items: center;
+  margin: 0 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #F5F5F5;
+  min-width: 0;
+}
+
+/* 保证人数永远完整显示，不缩减 */
+.occupancy-main-text {
+  display: inline-block !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  max-width: none !important;
+  flex-shrink: 0 !important;
+  font-weight: 500;
+  color: #111;
+  font-size: 16px;
+}
+
+/* 允许价格/星级在空间不足时变省略号 */
+.price-click-area {
+  flex: 1 !important;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  margin-left: 8px;
+}
+
+.price-placeholder-text {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  font-size: 16px;
+  color: #BBBBBB;
+}
+
+.price-placeholder-text.active-val {
+  color: #333 !important;
+  font-weight: 500;
+}
+
+/* 城市与输入框 */
+.city-main {
+  font-size: 20px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.search-input-main {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding-left: 10px;
+}
+
+.city-loc-icon {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid #006FED;
+  border-radius: 50%;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.city-loc-icon::after {
+  content: "";
+  width: 3.5px;
+  height: 3.5px;
+  background: #006FED;
+  border-radius: 50%;
+}
+
+/* --- 5. 底部标签与查询按钮 --- */
+.tag-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  padding: 12px 16px;
+  scrollbar-width: none;
+}
+
+.tag-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.tag-wrapper {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.custom-tag {
+  background-color: #F5F7FA;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.custom-tag.tag-active {
+  background-color: #E6F0FF;
+  color: #006FED;
+  font-weight: bold;
+}
+
+.main-search-btn {
+  width: calc(100% - 32px);
+  height: 48px;
+  margin: 8px 16px 20px;
+  background: linear-gradient(270deg, #0056B3 0%, #006FED 100%);
+  border: none;
+  border-radius: 8px 8px 16px 8px;
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+
+/* --- 6. 弹窗样式（含民宿网格） --- */
+.occ-header {
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+  position: relative;
+}
+
+.occ-header .close-x {
+  position: absolute;
+  left: 16px;
+  font-size: 24px;
+}
+
+.occ-header .occ-title {
+  font-weight: bold;
+  font-size: 17px;
+}
+
+/* 民宿专属网格样式 */
+.minsu-pop-tips {
+  background: #f0f7ff;
+  color: #006fed;
+  font-size: 13px;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.minsu-selection-section {
+  padding: 20px;
+}
+
+.pop-section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.pop-section-title .sub {
+  font-size: 12px;
+  color: #ccc;
+  font-weight: normal;
+  margin-left: 8px;
+}
+
+.pop-section-title .more-link {
+  flex: 1;
+  text-align: right;
+  font-size: 13px;
+  color: #006fed;
+  font-weight: normal;
+}
+
+.tag-grid-5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.tag-grid-5 .filter-tag {
+  background: #f7f8fa;
+  border-radius: 4px;
+  padding: 10px 0;
+  font-size: 13px;
+  text-align: center;
+  color: #333;
+}
+
+.tag-grid-5 .filter-tag.active {
+  background: #006fed !important;
+  color: #fff !important;
+  font-weight: bold;
+}
+
+/* 步进器样式（酒店用） */
+.stepper-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.stepper-row .label {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.stepper-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stepper-box button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #006fed;
+  background: #fff;
+  color: #006fed;
+  font-size: 20px;
+}
+
+.occ-footer-btns {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.reset-btn {
+  flex: 1;
+  height: 44px;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 8px;
+  color: #666;
+  font-size: 15px;
+}
+
+.occ-done-btn {
+  flex: 2;
+  height: 44px;
+  background: #006fed;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 15px;
 }
