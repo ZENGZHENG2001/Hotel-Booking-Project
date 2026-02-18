@@ -1,0 +1,544 @@
+/* --- 1. 基础页面布局 --- */
+.list-page {
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* 2. 顶部吸顶搜索头 */
+.list-sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 2001;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 8px;
+}
+
+.back-btn {
+  font-size: 20px;
+  color: #333;
+  padding: 0 4px;
+  cursor: pointer;
+}
+
+.search-info-bar {
+  flex: 1;
+  height: 40px;
+  background: #f2f3f5;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.header-city {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  flex-shrink: 0;
+}
+
+.vertical-divider {
+  width: 1px;
+  height: 18px;
+  background-color: #ddd;
+  margin: 0 10px;
+}
+
+.date-val {
+  font-size: 11px;
+  color: #006fed;
+  font-weight: 500;
+}
+
+.night-info {
+  font-size: 11px;
+  color: #666;
+  margin: 0 8px;
+}
+
+/* 搜索图标样式 */
+.inner-search-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.search-icon-small {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  margin-right: 6px;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat center;
+  background-size: contain;
+}
+
+.list-keyword-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13px;
+  color: #333;
+}
+
+/* 3. 筛选 Tab 条 */
+.list-filter-bar-v2 {
+  display: flex;
+  background: #fff;
+  height: 44px;
+  align-items: center;
+  position: sticky;
+  top: 56px;
+  z-index: 2000;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.adm-mask {
+  z-index: 1000 !important;
+  top: 100px !important;
+}
+
+.filter-tab-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #333;
+}
+
+.filter-tab-item.active-blue {
+  color: #006fed !important;
+  font-weight: bold;
+}
+
+.arrow-icon {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #999;
+  margin-left: 4px;
+  transition: transform 0.3s ease;
+}
+
+.filter-tab-item.active-blue .arrow-icon {
+  border-top-color: #006fed !important;
+}
+
+/* 4. 修改后的快捷标签栏样式：还原截图逻辑 */
+.quick-tags-scroll-v2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #fff;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* --- 新增以下三行 --- */
+  position: sticky;
+  /* 开启吸顶 */
+  top: 100px;
+  /* 刚好定在筛选 Tab 的下方 */
+  z-index: 1999;
+  /* 确保层级低于 Tab (2000)，但高于酒店列表 */
+  border-bottom: 1px solid #f0f0f0;
+  /* 可选：增加一条细线区分列表 */
+}
+
+.quick-tags-scroll-v2::-webkit-scrollbar {
+  display: none;
+}
+
+/* 基础标签样式 */
+.quick-tag-pill-v2 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #f5f7fa;
+  padding: 6px 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.quick-tag-pill-v2 .tag-text {
+  font-size: 12px;
+  color: #333;
+}
+
+/* 激活选中态 */
+.quick-tag-pill-v2.active {
+  background: #f0f7ff;
+  border-color: #006fed;
+}
+
+.quick-tag-pill-v2.active .tag-text {
+  color: #006fed;
+  font-weight: 500;
+}
+
+/* 右下角小勾图标 */
+.tag-check-icon {
+  font-style: normal;
+  font-size: 10px;
+  margin-left: 4px;
+  color: #006fed;
+}
+
+/* 5. 酒店列表基础容器 */
+.hotel-results-list {
+  padding: 10px;
+}
+
+/* 6. 筛选面板内容样式 */
+.filter-popup-inner {
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 列表行样式 (单选/对勾模式) */
+.dist-item,
+.sort-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f9f9f9;
+  font-size: 14px;
+}
+
+.dist-item.is-selected,
+.sort-row.is-selected {
+  color: #006fed !important;
+  font-weight: bold;
+}
+
+.check-mark-pure {
+  color: #006fed;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* 7. 核心：筛选面板复合布局 */
+.more-complex-panel .side-container {
+  display: flex;
+  height: 480px;
+}
+
+.more-complex-panel .adm-side-bar {
+  --width: 100px;
+  background: #f7f8fa;
+}
+
+.more-complex-panel .side-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #fff;
+}
+
+.group-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+/* 三列网格布局 */
+.filter-grid-v4 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+/* 纯文字多选标签样式 */
+.complex-tag {
+  background: #f5f7fa;
+  border-radius: 4px;
+  padding: 10px 4px;
+  font-size: 12px;
+  text-align: center;
+  color: #333;
+  border: 1px solid transparent;
+}
+
+.complex-tag.active {
+  background: #f0f7ff;
+  color: #006fed;
+  border-color: #006fed;
+  font-weight: bold;
+}
+
+/* 8. 位置距离三栏布局修正 */
+.dist-panel .side-container {
+  display: flex;
+  height: 450px;
+}
+
+.sub-sidebar {
+  width: 110px;
+  background: #f7f8fa;
+  border-right: 1px solid #eee;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.sub-item {
+  padding: 16px 12px;
+  font-size: 13px;
+  color: #666;
+}
+
+.sub-item.active {
+  color: #006fed;
+  background: #fff;
+  border-left: 3px solid #006fed;
+}
+
+/* 9. 面板通用底部按钮 */
+.panel-footer {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid #eee;
+  background: #fff;
+}
+
+.reset-btn {
+  flex: 1;
+  height: 44px;
+  background: #f5f7fa;
+  border: none;
+  border-radius: 6px;
+  color: #666;
+}
+
+.confirm-btn {
+  flex: 2;
+  height: 44px;
+  background: #006fed;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+/* 价格星级面板微调 */
+.price-star-panel .panel-body {
+  padding: 20px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-title span {
+  color: #006fed;
+  font-size: 12px;
+}
+
+.slider-box {
+  padding: 10px 10px 30px;
+}
+
+.grid-box {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.grid-tag {
+  background: #f5f7fa;
+  padding: 10px 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.grid-tag.active {
+  background: #f0f7ff;
+  color: #006fed;
+  border: 1px solid #006fed;
+}
+
+/* --- 10. 【重构】还原图片样式酒店卡片 V4 --- */
+
+.hotel-card-v4 {
+  display: flex;
+  background: #fff;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.hotel-card-v4-left {
+  width: 105px;
+  height: 140px;
+  flex-shrink: 0;
+}
+
+.hotel-card-v4-left img {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.hotel-card-v4-right {
+  flex: 1;
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.v4-hotel-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #111;
+  margin: 0 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.4;
+}
+
+.v4-stars {
+  color: #ffb400;
+  font-size: 9px;
+  letter-spacing: -1px;
+}
+
+.v4-score-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.v4-score-box {
+  background: #006fed;
+  color: #fff;
+  font-size: 11px;
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-weight: bold;
+}
+
+.v4-count {
+  font-size: 11px;
+  color: #666;
+}
+
+.v4-loc-line {
+  font-size: 12px;
+  color: #333;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v4-desc-line {
+  font-size: 11px;
+  color: #006fed;
+  /* 蓝色描述文字 */
+  margin-bottom: 6px;
+}
+
+.v4-tags-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.v4-tag-item {
+  font-size: 10px;
+  color: #666;
+  border: 1px solid #e0e0e0;
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+.v4-rank-line {
+  font-size: 11px;
+  color: #8b4513;
+  background: #fff5eb;
+  padding: 2px 6px;
+  width: fit-content;
+  border-radius: 2px;
+  margin-bottom: 4px;
+}
+
+.v4-brand-line {
+  font-size: 10px;
+  color: #999;
+}
+
+/* 价格区域还原 */
+.v4-price-row {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.v4-old-price {
+  font-size: 11px;
+  color: #999;
+  text-decoration: line-through;
+  margin-right: 4px;
+}
+
+.v4-currency {
+  font-size: 12px;
+  color: #006fed;
+  font-weight: bold;
+}
+
+.v4-amount {
+  font-size: 18px;
+  color: #006fed;
+  font-weight: bold;
+}
+
+.v4-起 {
+  font-size: 10px;
+  color: #666;
+}
+
+.v4-footer-tags {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.v4-f-tag {
+  font-size: 10px;
+  color: #ff5000;
+  padding: 0 2px;
+}
+
+.v4-price-bottom-label {
+  text-align: right;
+  font-size: 10px;
+  color: #ff5000;
+  font-weight: bold;
+  margin-top: 2px;
+}

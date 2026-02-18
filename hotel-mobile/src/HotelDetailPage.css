@@ -1,0 +1,537 @@
+.detail-page-v2 {
+  background-color: #f6f8fb;
+  min-height: 100vh;
+  padding-bottom: 90px;
+}
+
+/* 顶部 Banner 与导航 */
+.detail-header-v2 {
+  position: relative;
+  height: 280px;
+}
+
+.nav-bar-v2 {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.nav-back,
+.icon-item {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-size: 18px;
+  color: #333;
+}
+
+.nav-right {
+  display: flex;
+  gap: 10px;
+}
+
+.banner-img-v2 {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.img-category-tags {
+  position: absolute;
+  bottom: 45px;
+  left: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 4px 12px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  gap: 8px;
+}
+
+/* 信息卡片 */
+.info-card-v2 {
+  margin: -35px 10px 10px;
+  background: #fff;
+  border-radius: 16px;
+  position: relative;
+  z-index: 10;
+  padding: 16px;
+}
+
+.hotel-header-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.hotel-title {
+  font-size: 19px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.stars-row {
+  color: #ffb400;
+  font-size: 10px;
+  margin-left: 4px;
+}
+
+.recom-badge {
+  background: #fff1eb;
+  color: #ff5000;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.rank-text-line {
+  color: #8b4513;
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+
+.facility-grid-v2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow-x: auto;
+  border-bottom: 1px solid #f2f2f2;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+
+.fac-v2-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 55px;
+}
+
+.fac-icon {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.fac-v2-item span {
+  font-size: 10px;
+  color: #666;
+}
+
+.fac-v2-more {
+  font-size: 11px;
+  color: #333;
+  font-weight: bold;
+  min-width: 60px;
+}
+
+/* 评分地址栏还原 */
+.score-address-container {
+  display: flex;
+  gap: 8px;
+}
+
+.blue-score-section {
+  background: #f0f7ff;
+  border-radius: 8px;
+  padding: 10px;
+  flex: 1;
+}
+
+.score-num {
+  font-size: 18px;
+  font-weight: bold;
+  color: #006fed;
+}
+
+.score-label {
+  font-size: 13px;
+  font-weight: bold;
+  color: #006fed;
+  margin: 0 4px;
+}
+
+.review-total {
+  font-size: 11px;
+  color: #006fed;
+}
+
+.score-quote {
+  font-size: 11px;
+  color: #333;
+  margin-top: 4px;
+}
+
+.gray-address-section {
+  background: #f8f9fb;
+  border-radius: 8px;
+  padding: 10px;
+  flex: 1.2;
+  display: flex;
+}
+
+.address-main {
+  font-size: 11px;
+  color: #666;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.address-map-btn {
+  border-left: 1px solid #eee;
+  padding-left: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #006fed;
+  font-size: 11px;
+}
+
+/* 预订区 */
+.booking-area-v2 {
+  background: #fff;
+  margin: 0 10px;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.date-picker-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.d-date {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.d-day {
+  font-size: 11px;
+  color: #999;
+  margin-left: 4px;
+}
+
+.night-tag-box {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 11px;
+}
+
+.midnight-alert {
+  background: #333;
+  color: #fff;
+  font-size: 11px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.room-filters-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.filter-pill {
+  background: #f5f7fa;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.filter-pill-more {
+  background: #f5f7fa;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* 房型卡片 */
+.room-card-v2 {
+  display: flex;
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.room-img-v2 {
+  position: relative;
+  width: 85px;
+  height: 85px;
+  flex-shrink: 0;
+}
+
+.room-img-v2 img {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.img-count-tag {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.room-info-v2 {
+  flex: 1;
+  padding-left: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.room-name-v2 {
+  font-size: 15px;
+  font-weight: bold;
+  margin: 0 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.room-spec-v2 {
+  font-size: 11px;
+  color: #999;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.r-tag-v2 {
+  color: #0091ff;
+  font-size: 10px;
+  background: #eef8ff;
+  padding: 1px 4px;
+  border-radius: 2px;
+  margin-right: 4px;
+}
+
+.room-action-line-v2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.price-v2 .unit {
+  color: #ff5000;
+  font-size: 12px;
+}
+
+.price-v2 .val {
+  color: #ff5000;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.price-v2 .suffix {
+  color: #999;
+  font-size: 10px;
+  margin-left: 2px;
+}
+
+.check-btn-v2 {
+  background: #006fed;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 18px;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+/* 底部栏 */
+.detail-footer-v2 {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: #fff;
+  border-top: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  z-index: 1000;
+}
+
+.footer-left-chat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 10px;
+  color: #333;
+  margin-right: 15px;
+}
+
+.chat-icon-v2 {
+  font-size: 20px;
+  color: #006fed;
+}
+
+.footer-price-box {
+  margin-left: 5px;
+}
+
+.price-unit {
+  color: #006fed;
+  font-size: 12px;
+}
+
+.price-val {
+  color: #006fed;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.price-suffix {
+  color: #006fed;
+  font-size: 10px;
+}
+
+.footer-main-btn {
+  background: #006fed;
+  color: #fff;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 24px;
+  font-weight: bold;
+  font-size: 15px;
+  margin-left: auto;
+}
+
+/* 预订区容器 */
+.booking-area-v3 {
+  margin: 0 10px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  position: relative;
+}
+
+/* 日期选择栏 */
+.date-picker-bar-v3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  /* 为提示气泡留出紧凑空间 */
+}
+
+.date-main-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.date-v-box .d-date {
+  font-size: 18px;
+  font-weight: bold;
+  color: #111;
+}
+
+.date-v-box .d-day {
+  font-size: 12px;
+  color: #999;
+  margin-left: 4px;
+}
+
+.night-pill-v3 {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 11px;
+  color: #333;
+}
+
+/* 核心：凌晨入住气泡样式 */
+.midnight-bubble-tip {
+  position: relative;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+/* 黑色半透明背景框 */
+.bubble-content {
+  background: rgba(51, 51, 51, 0.9);
+  /* 黑色半透明 */
+  color: #fff;
+  font-size: 11px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  line-height: 1.4;
+}
+
+.moon-icon {
+  margin-right: 6px;
+  color: #ffda44;
+  /* 黄色小月亮 */
+  font-size: 12px;
+}
+
+/* 小三角指向“今天” */
+.bubble-arrow {
+  position: absolute;
+  top: -6px;
+  /* 向上偏移 */
+  left: 20px;
+  /* 根据“今天”文字的位置调整 */
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid rgba(51, 51, 51, 0.9);
+}
+
+/* 房型标签行 */
+.room-filters-scroll-v3 {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+  scrollbar-width: none;
+}
+
+.room-filters-scroll-v3::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-pill-v3 {
+  background: #f5f7fa;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #333;
+  white-space: nowrap;
+}
+
+.filter-pill-more-v3 {
+  background: #f5f7fa;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #333;
+  flex-shrink: 0;
+}
