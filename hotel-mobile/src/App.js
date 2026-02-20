@@ -3,8 +3,8 @@ import './App.css';
 import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
-import HotelListPage from './HotelListPage';
-import HotelDetailPage from './HotelDetailPage';
+import HotelListPage from './HotelListPage.js';
+import HotelDetailPage from './HotelDetailPage.js';
 
 dayjs.locale('zh-cn');
 
@@ -27,13 +27,10 @@ function App() {
   const [cityPickerVisible, setCityPickerVisible] = useState(false);
   const [chinaCityData, setChinaCityData] = useState([]);
 
-  // --- 日历核心状态管理 (同步列表页逻辑) ---
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [dateRange, setDateRange] = useState([new Date(), dayjs().add(1, 'day').toDate()]);
-  // 新增：内部预览状态，用于同步列表页的 selectingRange 逻辑
   const [selectingRange, setSelectingRange] = useState([new Date(), dayjs().add(1, 'day').toDate()]);
 
-  // 酒店/民宿筛选状态
   const [occVisible, setOccVisible] = useState(false);
   const [rooms, setRooms] = useState(1);
   const [adults, setAdults] = useState(1);
@@ -90,12 +87,13 @@ function App() {
   const fetchChinaCities = async () => {
     const KEY = 'f0f7c2a70cc7d73ecae91b411b571623';
     try {
-      const url = `https://restapi.amap.com/v3/config/district?keywords=中国&subdistrict=2&key=${KEY}`;
+      const url = `https://restapi.amap.com/v3/config/district?keywords=中国&subdistrict=3&key=${KEY}`;
       const response = await fetch(url);
       const data = await response.json();
       if (data.status === '1') {
         const formatData = (districts) => districts.map(item => ({
-          label: item.name, value: item.adcode,
+          label: item.name,
+          value: item.name,
           children: item.districts && item.districts.length > 0 ? formatData(item.districts) : undefined
         }));
         return formatData(data.districts[0].districts);
@@ -112,23 +110,26 @@ function App() {
     fetch(`https://restapi.amap.com/v3/ip?key=f0f7c2a70cc7d73ecae91b411b571623`)
       .then(res => res.json())
       .then(data => {
-        if (data.status === '1' && typeof data.city === 'string') {
-          const detectedCity = data.city.replace('市', '');
-          setCity(detectedCity);
+        if (data.status === '1') {
+          let target = data.district || data.city || data.province;
+          if (target && typeof target === 'string') {
+            const cleanCity = target.replace(/[市区县]$/, '');
+            setCity(cleanCity);
+          }
         }
-      }).finally(() => setIsLocating(false));
+      })
+      .catch(err => console.error("定位失败:", err))
+      .finally(() => setIsLocating(false));
   };
 
-  // --- 核心：修改首页日期选择逻辑，使其与另外两页完全一致 ---
   const handleHomeDateChange = (val) => {
-    setSelectingRange(val); // 同步预览状态
+    setSelectingRange(val);
     if (activeTab === 'hourly') {
       if (val) {
         setDateRange([val, val]);
         setCalendarVisible(false);
       }
     } else {
-      // 完全同步 HotelListPage 逻辑：选满起始和结束，且不是同一天才确认并关闭
       if (val && val[0] && val[1] && !dayjs(val[0]).isSame(dayjs(val[1]), 'day')) {
         setDateRange(val);
         setCalendarVisible(false);
@@ -136,7 +137,6 @@ function App() {
     }
   };
 
-  // 同步 HotelListPage 的 handleCancelCalendar 逻辑
   const handleCancelHomeCalendar = () => {
     setSelectingRange(dateRange);
     setCalendarVisible(false);
@@ -145,6 +145,24 @@ function App() {
   const handleGoToDetail = (hotel, fromPage) => {
     setSelectedHotel({ ...hotel, fromPage });
     setCurrentPage('detail');
+  };
+
+  // 核心改进：点击查询时，将所有复杂筛选打包
+  const handleSearch = () => {
+    // 解析价格区间
+    let minP = 0, maxP = 99999;
+    if (selectedPrice === '¥150以下') maxP = 150;
+    else if (selectedPrice === '¥150-300') { minP = 150; maxP = 300; }
+    else if (selectedPrice === '¥300-450') { minP = 300; maxP = 450; }
+    else if (selectedPrice === '¥450-600') { minP = 450; maxP = 600; }
+    else if (selectedPrice === '¥600以上') minP = 600;
+
+    // 解析最低评分
+    const minScore = searchKeyword === '4.7分以上' ? 4.7 : 0;
+
+    setCurrentPage('list');
+    // 注意：HotelListPage 会接收到这些完整的 searchParams
+    // 列表页内部 fetch 时应使用这些参数
   };
 
   if (currentPage === 'detail') {
@@ -157,12 +175,25 @@ function App() {
   }
 
   if (currentPage === 'list') {
+    // 计算价格区间用于传递
+    let minP = 0, maxP = 99999;
+    if (selectedPrice === '¥150以下') maxP = 150;
+    else if (selectedPrice === '¥150-300') { minP = 150; maxP = 300; }
+    else if (selectedPrice === '¥300-450') { minP = 300; maxP = 450; }
+    else if (selectedPrice === '¥450-600') { minP = 450; maxP = 600; }
+    else if (selectedPrice === '¥600以上') minP = 600;
+
     return (
       <HotelListPage
         searchParams={{
           city: city,
           rawDateRange: dateRange,
-          keyword: searchKeyword
+          keyword: searchKeyword,
+          type: activeTab,
+          minPrice: minP,
+          maxPrice: maxP,
+          stars: selectedLevels.join(','),
+          minScore: searchKeyword === '4.7分以上' ? 4.7 : 0
         }}
         chinaCityData={chinaCityData}
         overseasCityData={overseasCityData}
@@ -267,7 +298,7 @@ function App() {
           )}
 
           <div className="search-btn-container">
-            <button className="main-search-btn" onClick={() => setCurrentPage('list')}>查询</button>
+            <button className="main-search-btn" onClick={handleSearch}>查询</button>
           </div>
         </div>
       </div>
@@ -276,10 +307,13 @@ function App() {
         options={subType === 'overseas' ? overseasCityData : chinaCityData}
         visible={cityPickerVisible}
         onClose={() => setCityPickerVisible(false)}
-        onConfirm={(val, extend) => { setCity((extend.items[extend.items.length - 1]?.label || '北京').replace('市', '')); setCityPickerVisible(false); }}
+        onConfirm={(val, extend) => {
+          const label = extend.items[extend.items.length - 1]?.label || '北京';
+          setCity(label.replace(/[市区县]$/, ''));
+          setCityPickerVisible(false);
+        }}
       />
 
-      {/* 修改后的统一日历弹窗逻辑，引入 handleCancelHomeCalendar */}
       <Popup visible={calendarVisible} onMaskClick={handleCancelHomeCalendar} bodyStyle={{ height: '70vh' }}>
         <Calendar
           selectionMode={activeTab === 'hourly' ? 'single' : 'range'}
