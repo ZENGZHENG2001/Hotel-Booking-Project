@@ -31,7 +31,6 @@ const HotelListPage = ({ searchParams, onBack, chinaCityData, overseasCityData, 
 
     const starMap = { '2钻/星及以下': 2, '3钻/星': 3, '4钻/星': 4, '5钻/星': 5 };
     const starsParam = selectedLevels.map(l => starMap[l]).filter(Boolean).join(',');
-
     const geoKeyword = selectedDistMap.admin || selectedDistMap.hot || selectedDistMap.subway || '';
 
     const params = new URLSearchParams({
@@ -230,6 +229,7 @@ const HotelListPage = ({ searchParams, onBack, chinaCityData, overseasCityData, 
   const renderDistPanel = () => {
     const isThreeCol = activeSideKey === 'subway';
     let currentRightData = isThreeCol ? (activeSubKey ? (locationData.subway[activeSubKey] || []) : []) : (locationData[activeSideKey] || []);
+    // --- 核心修复点：注入缺失的变量定义 ---
     const selectedInCurrentCategory = selectedDistMap[activeSideKey];
     return (
       <div className="filter-popup-inner dist-panel">
@@ -309,13 +309,8 @@ const HotelListPage = ({ searchParams, onBack, chinaCityData, overseasCityData, 
           hotels.map(hotel => (
             <div key={hotel.id} className="hotel-card-v4" onClick={() => onSelectHotel({ ...hotel, rawDateRange: confirmedDateRange })}>
               <div className="hotel-card-v4-left">
-                <img
-                  src={`http://localhost:5000${hotel.image}`}
-                  alt={hotel.name}
-                  onError={(e) => {
-                    e.target.src = 'https://via.placeholder.com/100x130?text=暂无图片';
-                  }}
-                />
+                {/* 图片路径拼接保持 5000 端口 */}
+                <img src={`http://localhost:5000${hotel.image}`} alt={hotel.name} />
               </div>
               <div className="hotel-card-v4-right">
                 <h4 className="v4-hotel-name">{hotel.name} <span className="v4-stars">{"★".repeat(hotel.stars)}</span></h4>

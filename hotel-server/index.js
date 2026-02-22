@@ -9,21 +9,8 @@ const port = 5000;
 app.use(cors());
 app.use(express.json());
 
-// --- 核心修复：解除 CSP 安全拦截与 URL 空格清洗 ---
-app.use((req, res, next) => {
-  // 1. 自动去掉 URL 里的空格，解决 image_e171a7.png 中的匹配问题
-  req.url = decodeURIComponent(req.url).trim();
-
-  // 2. 解除 image_e1d775.png 中的安全策略拦截，允许图片加载
-  res.setHeader("Content-Security-Policy", "default-src * 'unsafe-inline' 'unsafe-eval'; img-src * data: blob:;");
-  next();
-});
-
-// --- 强制路径对齐 ---
-const assetsDir = path.resolve(__dirname, 'assets');
-
-// 静态资源托管
-app.use('/assets', express.static(assetsDir));
+// --- 核心修复：只加这一行，让浏览器能访问 assets 文件夹 ---
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 const DATA_PATH = path.join(__dirname, 'hotels.json');
 const DEFAULT_STOCK = 10;
@@ -34,6 +21,7 @@ const readHotels = () => {
     const hotels = JSON.parse(data);
 
     // --- 后端自动纠错 ---
+    // 自动修剪空格，防止路径解析失败
     return hotels.map(hotel => ({
       ...hotel,
       image: hotel.image ? hotel.image.trim() : ''
@@ -138,16 +126,6 @@ app.post('/api/admin/save-hotel', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`-----------------------------------------`);
   console.log(`服务端已启动: http://localhost:${port}`);
-  console.log(`静态图片目录: ${assetsDir}`);
-
-  try {
-    const files = fs.readdirSync(assetsDir);
-    console.log(`【自检】该目录下实际存在的文件数量:`, files.length);
-    if (files.length === 0) console.warn("警告：assets 文件夹目前是空的！");
-  } catch (err) {
-    console.error("致命错误：无法访问 assets 目录，请检查文件夹是否存在！");
-  }
-  console.log(`-----------------------------------------`);
+  console.log(`静态目录: ${path.join(__dirname, 'assets')}`);
 });

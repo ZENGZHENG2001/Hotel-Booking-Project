@@ -4,6 +4,9 @@ import dayjs from 'dayjs';
 import './HotelDetailPage.css';
 
 const HotelDetailPage = ({ hotel, onBack }) => {
+  // 基础服务器地址
+  const baseUrl = "http://localhost:5000";
+
   // 滚动监听逻辑
   const [isFixed, setIsFixed] = useState(false);
 
@@ -46,6 +49,12 @@ const HotelDetailPage = ({ hotel, onBack }) => {
 
   const roomTypes = (hotel.rooms || []).sort((a, b) => a.price - b.price);
 
+  // --- 图片处理逻辑 ---
+  // 轮播图列表：如果定义了 bannerImages 则使用，否则回退使用 image
+  const bannerList = hotel.bannerImages && hotel.bannerImages.length > 0
+    ? hotel.bannerImages
+    : [hotel.image];
+
   return (
     <div className="detail-page-v2">
       {/* 修改后的导航栏：名字在箭头右边，去掉右侧图标 */}
@@ -59,13 +68,18 @@ const HotelDetailPage = ({ hotel, onBack }) => {
 
       <div className="detail-header-v2">
         <Swiper autoplay loop className="banner-swiper-v2">
-          {[1, 2, 3].map(i => (
+          {bannerList.map((imgUrl, i) => (
             <Swiper.Item key={i}>
-              <div className="banner-img-v2" style={{ backgroundImage: `url(${hotel.image})` }}>
-                <div className="video-play-icon">▶</div>
+              <div
+                className="banner-img-v2"
+                style={{
+                  backgroundImage: `url(${imgUrl.startsWith('http') ? imgUrl : baseUrl + imgUrl})`
+                }}
+              >
+                {/* <div className="video-play-icon">▶</div>
                 <div className="img-category-tags">
                   <span>封面</span><span>精选</span><span>位置</span><span>相册</span>
-                </div>
+                </div> */}
               </div>
             </Swiper.Item>
           ))}
@@ -130,10 +144,18 @@ const HotelDetailPage = ({ hotel, onBack }) => {
       <div className="rooms-list-container-v4">
         {roomTypes.map(room => {
           const isFull = room.stock === 0;
+          // 房型图片渲染逻辑：优先用房间图，没有则用酒店图
+          const rImg = room.image || hotel.image;
+          const rImgUrl = rImg.startsWith('http') ? rImg : baseUrl + rImg;
+
           return (
             <div key={room.id} className={`room-card-v2-styled ${isFull ? 'room-full' : ''}`}>
               <div className="room-img-wrapper">
-                <img src={hotel.image} alt="" style={{ filter: isFull ? 'grayscale(100%)' : 'none', opacity: isFull ? 0.6 : 1 }} />
+                <img
+                  src={rImgUrl}
+                  alt={room.name}
+                  style={{ filter: isFull ? 'grayscale(100%)' : 'none', opacity: isFull ? 0.6 : 1 }}
+                />
                 <div className="room-img-badge">{room.imageCount || 0}</div>
               </div>
               <div className="room-content-wrapper">

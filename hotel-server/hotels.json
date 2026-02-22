@@ -16,7 +16,12 @@
       "lng": 121.5120
     },
     "openYear": "2020",
-    "image": "/9b2383793b12254f0908dd5e0a2d1889.jpeg",
+    "image": "/assets/9b2383793b12254f0908dd5e0a2d1889.jpeg",
+    "bannerImages": [
+      "/assets/9b2383793b12254f0908dd5e0a2d1889.jpeg",
+      "/assets/hotel_lobby.png",
+      "/assets/hotel_pool.png"
+    ],
     "price": 936,
     "status": "published",
     "quickFacilities": [
@@ -49,26 +54,28 @@
         "id": "r1",
         "name": "经典双床房",
         "price": 936,
+        "image": "/assets/room_twin.png",
         "bedType": "2张1.2米单人床",
         "area": "40m²",
         "capacity": "2人入住",
         "floor": "5-15层",
-        "imageCount": 5,
+        "imageCount": 1,
         "availability": {
           "2026-02-20": 3,
           "2026-02-21": 5,
-          "2026-02-22": 0
+          "2026-02-22": 5
         }
       },
       {
         "id": "r2",
         "name": "经典大床房",
         "price": 350,
+        "image": "/assets/room_king.png",
         "bedType": "1张1.8米大床",
         "area": "40m²",
         "capacity": "2人入住",
         "floor": "15-20层",
-        "imageCount": 5,
+        "imageCount": 1,
         "availability": {
           "2026-02-20": 3,
           "2026-02-21": 5,
